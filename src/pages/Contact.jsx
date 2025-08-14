@@ -6,8 +6,9 @@ const Contact = () => {
   return (
     <>
       <Navbar />
-<main className="h-[calc(100vh-px)] flex items-center justify-center bg-gradient-to-tr from-purple-900 via-black to-purple-800 px-6 mt-[64px]">
-        <div className="bg-black/70 backdrop-blur-md max-w-md w-full rounded-3xl p-12 shadow-2xl border border-purple-600">
+<main className="flex items-center justify-center bg-gradient-to-tr from-purple-900 via-black to-purple-800 px-6 pt-[80px] pb-[40px]">
+  <div className="bg-black/70 backdrop-blur-md max-w-md w-full rounded-3xl p-5 shadow-2xl border border-purple-600">
+
           <h1 className="text-4xl font-extrabold text-white mb-8 text-center tracking-wide">
             Contact Us
           </h1>

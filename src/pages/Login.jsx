@@ -8,7 +8,7 @@ export default function Login() {
     <>
     <Navbar />
     <div className="min-h-screen bg-gradient-to-tr from-purple-900 via-black to-purple-800 flex items-center justify-center px-6">
-      <div className="bg-black/70 backdrop-blur-md max-w-md w-full rounded-3xl p-12 shadow-2xl border border-purple-600">
+      <div className="bg-black/70 backdrop-blur-md max-w-md w-full rounded-3xl p-12 shadow-2xl border border-purple-600 mt-[65px]">
         <h1 className="text-5xl font-extrabold text-white mb-10 text-center tracking-wide">
           Login to Your Account
         </h1>
