@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import ResultPage from "./pages/Result";
+import ResultPage from "./pages/QuizResult";
 import SignupPage from "./pages/Signup"; 
 import Login from "./pages/Login"; 
 import Dash from "./pages/Dashboard"; 
@@ -17,7 +17,7 @@ function App() {
         <Route path="/result" element={<ResultPage score={8} total={10} user="John Doe" />} />
          <Route path="/dash" element={<Dash />} />
          <Route path="/contact" element={<Contact />} />
-         <Route path="/home" element={<Home />} />
+         <Route path="/" element={<Home />} />
          <Route path="/navbar" element={<Navbar/>} />
          <Route path="/contact" element={<Contact />} />
          <Route path="/about" element={<About />} />
