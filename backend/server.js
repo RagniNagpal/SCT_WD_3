@@ -1,5 +1,5 @@
+// backend/server.js
 const express = require("express");
-const mongoose = require("mongoose");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
 const bcrypt = require("bcryptjs");
@@ -8,25 +8,29 @@ const dotenv = require("dotenv");
 const connectDB = require("./db");
 const User = require("./models/User");
 const quizResultsRoute = require("./routes/quizResults");
+const path = require("path");
 
-// ENV config
-dotenv.config();
+// Load .env
+dotenv.config({ path: path.resolve(__dirname, ".env") });
+
+// console.log("Mongo URI:", process.env.MONGO_URI); // ✅ check
+// console.log("Session Secret:", process.env.SESSION_SECRET); // ✅ check
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middlewares
+// DB
+connectDB();
+
+// Middleware
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173", // React frontend ka URL
-    credentials: true
+    origin: "http://localhost:5173",
+    credentials: true,
   })
 );
 
-// MongoDB Connect
-connectDB();
-
-// Session Config
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "fallbackSecret",
@@ -34,70 +38,50 @@ app.use(
     saveUninitialized: false,
     store: MongoStore.create({
       mongoUrl: process.env.MONGO_URI || "mongodb://127.0.0.1:27017/quizApp",
-      collectionName: "sessions"
+      collectionName: "sessions",
     }),
     cookie: {
       secure: false,
       httpOnly: true,
-      maxAge: 1000 * 60 * 60 // 1 hour
-    }
+      maxAge: 1000 * 60 * 60,
+    },
   })
 );
 
-// Routes: User
+// AUTH routes
 app.post("/signup", async (req, res) => {
-  const { username, email, password } = req.body;
   try {
+    const { username, email, password } = req.body;
     const existing = await User.findOne({ email });
     if (existing) return res.status(400).json({ message: "User already exists" });
 
-    const hashedPass = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password: hashedPass });
-    await newUser.save();
+    const hashed = await bcrypt.hash(password, 10);
+    const user = await User.create({ username, email, password: hashed });
 
-    res.status(201).json({ message: "User registered successfully" });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    req.session.user = { _id: user._id, email: user.email, username: user.username };
+    res.status(201).json({ message: "User registered successfully", user: req.session.user });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 });
 
 app.post("/login", async (req, res) => {
-  const { email, password } = req.body;
   try {
+    const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(400).json({ message: "Invalid credentials" });
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: "Invalid credentials" });
+    const ok = await bcrypt.compare(password, user.password);
+    if (!ok) return res.status(400).json({ message: "Invalid credentials" });
 
-    req.session.user = { id: user._id, email: user.email };
+    req.session.user = { _id: user._id, email: user.email, username: user.username };
     res.json({ message: "Login successful", user: req.session.user });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+  } catch (e) {
+    res.status(500).json({ error: e.message });
   }
 });
 
-// Protected Dashboard
-app.get("/dashboard", (req, res) => {
-  if (!req.session.user) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-  res.json({ message: "Welcome to Dashboard", user: req.session.user });
-});
-
-// Logout
-app.post("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) return res.status(500).json({ message: "Logout failed" });
-    res.clearCookie("connect.sid");
-    res.json({ message: "Logged out successfully" });
-  });
-});
-
-// Quiz Results Routes
+// Quiz result routes
 app.use("/api/quiz-results", quizResultsRoute);
 
-// Start Server
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

@@ -1,27 +1,35 @@
 const express = require("express");
+const router = express.Router();
 const QuizResult = require("../models/QuizResult");
 
-const router = express.Router();
-
-// Save quiz result
+// POST /api/quiz-results/save  -> save a result
 router.post("/save", async (req, res) => {
-  const { userId, category, score, total } = req.body;
   try {
+    const { userId, category, score, total } = req.body;
+
+    if (!userId || !category || score === undefined || total === undefined) {
+      return res.status(400).json({ message: "userId, category, score, total required" });
+    }
+
     const result = new QuizResult({ userId, category, score, total });
     await result.save();
-    res.json({ message: "Score saved successfully!" });
+
+    res.status(201).json({ message: "Score saved successfully!", result });
   } catch (err) {
-    res.status(500).json({ message: "Error saving score", err });
+    console.error("save error:", err);
+    res.status(500).json({ message: "Error saving score", error: err.message });
   }
 });
 
-// Get all results of a user
+// GET /api/quiz-results/:userId  -> list results for a user
 router.get("/:userId", async (req, res) => {
   try {
-    const results = await QuizResult.find({ userId: req.params.userId });
+    const results = await QuizResult.find({ userId: req.params.userId })
+      .sort({ createdAt: -1 });
     res.json(results);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching results", err });
+    console.error("fetch error:", err);
+    res.status(500).json({ message: "Error fetching results", error: err.message });
   }
 });
 

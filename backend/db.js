@@ -2,13 +2,13 @@ const mongoose = require("mongoose");
 
 const connectDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/quizApp", {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
+    await mongoose.connect(process.env.MONGO_URI, {
+      autoIndex: true,
     });
     console.log("✅ MongoDB connected");
   } catch (err) {
-    console.error("❌ MongoDB connection error:", err);
+    console.error("❌ MongoDB connection error:", err.message);
+    process.exit(1);
   }
 };
 
