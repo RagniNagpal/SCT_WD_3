@@ -26,17 +26,15 @@ export default function Signup() {
 
       alert(res.data.message);
 
-      // ✅ Agar backend signup ke baad user return kare toh usse save karo
       if (res.data.user) {
         localStorage.setItem("user", JSON.stringify(res.data.user));
       }
 
       console.log("✅ Signup Success:", res.data);
 
-      // 🔀 Redirect to login page
       navigate("/login");
     } catch (err) {
-      console.error("❌ Signup Error:", err.response?.data || err.message);
+      console.error(" Signup Error:", err.response?.data || err.message);
       alert(err.response?.data?.message || "Signup failed");
     }
   };

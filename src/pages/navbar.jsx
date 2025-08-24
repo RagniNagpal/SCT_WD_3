@@ -14,7 +14,7 @@ const Navbar = () => {
 
   // Auth links
   const authLinks = [
-    { name: "Dashboard", href: "/dash", style: "hover:text-indigo-700 transition duration-300 block" }, 
+    { name: "Dashboard", "href": "/dashboard", style: "hover:text-indigo-700 transition duration-300 block" }, 
     { name: "Login", href: "/login", style: "bg-indigo-600 text-white hover:bg-indigo-800 px-4 py-1 rounded-md shadow-md" },
     { name: "Signup", href: "/signup", style: "bg-indigo-600 text-white hover:bg-indigo-800 px-4 py-1 rounded-md shadow-md" },
   ];

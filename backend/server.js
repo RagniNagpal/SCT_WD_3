@@ -13,8 +13,6 @@ const path = require("path");
 // Load .env
 dotenv.config({ path: path.resolve(__dirname, ".env") });
 
-// console.log("Mongo URI:", process.env.MONGO_URI); // ✅ check
-// console.log("Session Secret:", process.env.SESSION_SECRET); // ✅ check
 
 const app = express();
 const PORT = process.env.PORT || 5000;
