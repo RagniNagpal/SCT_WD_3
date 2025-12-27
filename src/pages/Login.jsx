@@ -1,104 +1,154 @@
+
+
+
+
+// import React, { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+// import Navbar from "./navbar";
+
+// export default function Login() {
+//   const [email, setEmail] = useState("");
+//   const [password, setPassword] = useState("");
+//   const navigate = useNavigate();
+
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+
+//     try {
+//       const res = await fetch("http://localhost:5000/login", {
+//         method: "POST",
+//         headers: { "Content-Type": "application/json" },
+//         credentials: "include",
+//         body: JSON.stringify({ email, password }),
+//       });
+
+//       const data = await res.json();
+//       if (!res.ok) throw new Error(data.message);
+
+//       // ✅ MOST IMPORTANT LINE
+//       localStorage.setItem("user", JSON.stringify(data.user));
+
+//       navigate("/quiz");
+//     } catch (err) {
+//       alert(err.message);
+//     }
+//   };
+
+//   return (
+//     <>
+//       <Navbar />
+//       <div className="min-h-screen flex items-center justify-center bg-gradient-to-tr from-purple-900 via-black to-purple-800">
+//         <form onSubmit={handleLogin} className="bg-black/70 p-8 rounded-2xl w-96 text-white">
+//           <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+
+//           <input
+//             type="email"
+//             placeholder="Email"
+//             className="w-full mb-4 p-3 rounded bg-gray-800"
+//             onChange={(e) => setEmail(e.target.value)}
+//           />
+
+//           <input
+//             type="password"
+//             placeholder="Password"
+//             className="w-full mb-4 p-3 rounded bg-gray-800"
+//             onChange={(e) => setPassword(e.target.value)}
+//           />
+
+//           <button className="w-full bg-purple-700 py-3 rounded font-bold">
+//             Login
+//           </button>
+//         </form>
+//       </div>
+//     </>
+//   );
+// }
+
+
+
+
 import React, { useState } from "react";
 import Navbar from "./navbar";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-export default function Login() {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(
-        "http://localhost:5000/login",
-        { email, password },
-        { withCredentials: true }
-      );
+      const res = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ email, password }),
+      });
 
-      alert(res.data.message || "Login successful");
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message);
 
-      if (res.data.user) {
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-      }
-
-      console.log("✅ Login success:", res.data);
-      navigate("/dashboard");
+      localStorage.setItem("user", JSON.stringify(data.user));
+      navigate("/quiz");
     } catch (err) {
-      console.error("❌ Login error:", err.response?.data || err.message);
-      alert(err.response?.data?.message || "Login failed");
+      alert(err.message);
     }
   };
 
   return (
     <>
       <Navbar />
-      <div className="min-h-screen bg-gradient-to-tr from-purple-900 via-black to-purple-800 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <div className="bg-black/70 backdrop-blur-md w-full max-w-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-purple-600">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-white mb-6 text-center tracking-wide">
-            Login to Your Account
-          </h1>
+      <main className="flex justify-center items-start min-h-screen bg-gradient-to-tr from-indigo-900 via-purple-900 to-pink-900 px-6 pt-32 pb-1">
 
-          <form className="space-y-4 sm:space-y-6" onSubmit={handleSubmit}>
-            {/* Email */}
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-purple-300 mb-1 sm:mb-2 text-sm sm:text-base font-semibold"
-              >
+        <div className="w-full max-w-lg bg-gray-900/70 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-600 p-8 flex flex-col gap-6">
+
+          <h1 className="text-3xl md:text-4xl font-extrabold text-white text-center">
+            Welcome Back
+          </h1>
+          <p className="text-gray-300 text-center text-sm md:text-base">
+            Login to continue your quizzes
+          </p>
+
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+
+            <div className="flex flex-col">
+              <label className="text-purple-300 font-medium text-sm mb-1">
                 Email Address
               </label>
               <input
-                id="email"
                 type="email"
                 placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-lg bg-purple-950/40 border border-purple-700 py-2 sm:py-3 px-3 sm:px-4 text-white text-sm sm:text-base placeholder-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                onChange={(e) => setEmail(e.target.value)}
+                className="bg-gray-800/50 border border-purple-700 text-white placeholder-purple-400 rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none"
               />
             </div>
 
-            {/* Password */}
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-purple-300 mb-1 sm:mb-2 text-sm sm:text-base font-semibold"
-              >
+            <div className="flex flex-col">
+              <label className="text-purple-300 font-medium text-sm mb-1">
                 Password
               </label>
               <input
-                id="password"
                 type="password"
-                placeholder="Enter your password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Your password"
                 required
-                className="w-full rounded-lg bg-purple-950/40 border border-purple-700 py-2 sm:py-3 px-3 sm:px-4 text-white text-sm sm:text-base placeholder-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                onChange={(e) => setPassword(e.target.value)}
+                className="bg-gray-800/50 border border-purple-700 text-white placeholder-purple-400 rounded-xl px-4 py-3 focus:ring-2 focus:ring-purple-500 outline-none"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full py-3 sm:py-4 rounded-lg bg-gradient-to-r from-purple-600 to-purple-800 text-white text-lg sm:text-xl font-extrabold hover:from-purple-700 hover:to-purple-900 transition"
+              className="mt-2 py-3 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 text-white font-bold shadow-lg hover:from-purple-500 hover:to-pink-600 transition"
             >
               Login
             </button>
           </form>
-
-          <p className="text-center mt-4 sm:mt-6 text-purple-300 text-sm sm:text-base">
-            Don't have an account?{" "}
-            <a
-              href="/signup"
-              className="text-white font-semibold hover:underline"
-            >
-              Sign Up
-            </a>
-          </p>
         </div>
-      </div>
+      </main>
     </>
   );
-}
+};
 
+export default Login;

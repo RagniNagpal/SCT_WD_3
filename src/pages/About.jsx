@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { FaClipboardList, FaQuestionCircle, FaTrophy, FaUsers } from 'react-icons/fa';
 import Navbar from './navbar';
@@ -11,26 +12,27 @@ const steps = [
 
 const About = () => {
   return (
-    <div>
+    <>
       <Navbar />
 
-      <main className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-tr from-purple-900 via-black to-purple-800 px-6 py-16 space-y-20 mt-6">
+      <main className="flex flex-col items-center bg-gradient-to-tr from-indigo-900 via-purple-900 to-pink-900 px-6 py-24 space-y-20 min-h-screen">
+
         {/* About Section */}
-        <div className="bg-black/70 backdrop-blur-md max-w-4xl w-full rounded-3xl p-12 shadow-2xl border border-purple-600 text-white">
-          <h1 className="text-5xl font-extrabold mb-8 text-center">About Thinkleap</h1>
-          <p className="text-lg mb-6">
+        <div className="w-full max-w-4xl bg-gray-900/70 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-purple-600 text-white flex flex-col gap-6">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-center">About Thinkleap</h1>
+          <p className="text-gray-300 text-lg md:text-xl text-center">
             Thinkleap is your ultimate online quiz platform designed to help you test your knowledge, learn new things, and compete with others on a global leaderboard.
           </p>
-          <p className="text-lg mb-6">
+          <p className="text-gray-300 text-lg md:text-xl text-center">
             Whether you want to sharpen your skills or simply enjoy fun quizzes, Thinkleap offers engaging content for everyone.
           </p>
-          <p className="text-lg mb-6">
+          <p className="text-gray-300 text-lg md:text-xl text-center">
             Join our community and take your learning to the next level!
           </p>
-          <div className="text-center mt-10">
+          <div className="flex justify-center mt-6">
             <a
               href="/quiz"
-              className="inline-block bg-gradient-to-r from-purple-600 to-purple-800 text-white py-3 px-8 rounded-xl text-xl font-bold hover:from-purple-700 hover:to-purple-900 transition"
+              className="bg-gradient-to-r from-purple-600 to-indigo-700 px-8 py-3 rounded-2xl text-white text-lg font-bold shadow-lg hover:from-indigo-600 hover:to-purple-800 transform hover:-translate-y-1 transition-all duration-300"
             >
               Start Quizzing Now
             </a>
@@ -38,20 +40,23 @@ const About = () => {
         </div>
 
         {/* How It Works Section */}
-        <section className="py-16 bg-gradient-to-tr from-purple-900 via-black to-purple-800 text-white px-6 w-full max-w-5xl rounded-3xl">
-          <h2 className="text-4xl font-extrabold text-center mb-12">How It Works</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 text-center">
+        <section className="w-full max-w-5xl px-6 py-16 bg-gray-900/70 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-600 text-white">
+          <h2 className="text-3xl md:text-4xl font-extrabold text-center mb-12">How It Works</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
             {steps.map(({ icon, title, description }, i) => (
-              <div key={i} className="flex flex-col items-center gap-4 p-6 bg-black/50 rounded-xl shadow-lg">
+              <div
+                key={i}
+                className="flex flex-col items-center gap-4 p-6 bg-black/50 rounded-2xl shadow-lg hover:scale-105 transform transition-all duration-300"
+              >
                 <div className="text-purple-400">{icon}</div>
-                <h3 className="text-2xl font-bold">{title}</h3>
-                <p className="text-purple-300">{description}</p>
+                <h3 className="text-xl md:text-2xl font-bold">{title}</h3>
+                <p className="text-purple-300 text-center text-sm md:text-base">{description}</p>
               </div>
             ))}
           </div>
         </section>
       </main>
-    </div>
+    </>
   );
 };
 

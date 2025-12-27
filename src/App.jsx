@@ -1,17 +1,31 @@
+
+
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SignupPage from "./pages/Signup";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Navbar from "./pages/navbar";
 import Home from "./pages/Home";
 import Contact from "./pages/Contact";
 import About from "./pages/About";
 import Quiz from "./pages/Quiz";
 
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 function App() {
   return (
     <Router>
-      {/* <Navbar /> */}
+      {/* ✅ Toast Container (ONLY ONCE) */}
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="dark"
+      />
+
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignupPage />} />
@@ -24,4 +38,5 @@ function App() {
     </Router>
   );
 }
+
 export default App;
