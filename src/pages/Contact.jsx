@@ -1,7 +1,9 @@
+
 import React, { useState } from "react";
 import Navbar from "./navbar";
 import axios from "axios";
-import emailjs from "@emailjs/browser";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Contact = () => {
   const [name, setName] = useState("");
@@ -10,37 +12,27 @@ const Contact = () => {
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  try {
-    // Backend call (optional)
-    await axios.post("http://localhost:5000/contact", { name, email, message });
-
-    // ✅ EmailJS send
-    await emailjs.send(
-      import.meta.env.VITE_EMAILJS_SERVICE_ID,
-      import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
-      { name, email, message },
-      import.meta.env.VITE_EMAILJS_PUBLIC_KEY
-    );
-
-    toast.success("Message sent via EmailJS!");
-    setName(""); setEmail(""); setMessage("");
-  } catch (err) {
-    toast.error("Failed to send message");
-  } finally {
-    setLoading(false);
-  }
-};
+    e.preventDefault();
+    setLoading(true);
+    try {
+      await axios.post("http://localhost:5000/contact", { name, email, message });
+      toast.success("Message sent successfully!");
+      setName(""); 
+      setEmail(""); 
+      setMessage("");
+    } catch (err) {
+      toast.error("Failed to send message");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
       <Navbar />
 
       <main className="flex justify-center items-start min-h-screen bg-gradient-to-tr from-indigo-900 via-purple-900 to-pink-900 px-6 pt-32 pb-10">
-
         <div className="w-full max-w-lg bg-gray-900/70 backdrop-blur-xl rounded-3xl shadow-2xl border border-purple-600 p-8 flex flex-col gap-6">
-
           <h1 className="text-3xl md:text-4xl font-extrabold text-white text-center">
             Contact Us
           </h1>
@@ -50,8 +42,6 @@ const Contact = () => {
           </p>
 
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-
-            {/* Name */}
             <div className="flex flex-col">
               <label className="text-purple-300 font-medium text-sm mb-1">
                 Full Name
@@ -66,7 +56,6 @@ const Contact = () => {
               />
             </div>
 
-            {/* Email */}
             <div className="flex flex-col">
               <label className="text-purple-300 font-medium text-sm mb-1">
                 Email Address
@@ -81,7 +70,6 @@ const Contact = () => {
               />
             </div>
 
-            {/* Message */}
             <div className="flex flex-col">
               <label className="text-purple-300 font-medium text-sm mb-1">
                 Message
@@ -96,7 +84,6 @@ const Contact = () => {
               />
             </div>
 
-            {/* Button */}
             <button
               type="submit"
               disabled={loading}
@@ -104,13 +91,10 @@ const Contact = () => {
             >
               {loading ? "Sending..." : "Send Message"}
             </button>
-
           </form>
-
         </div>
       </main>
     </>
-
   );
 };
 
