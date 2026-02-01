@@ -1,3 +1,5 @@
+
+
 import { useNavigate } from "react-router-dom";
 import React, { useState, useEffect } from "react";
 import Navbar from "./navbar";
@@ -29,7 +31,7 @@ export default function Quiz() {
   // Fetch quizzes
   const fetchQuizzes = async (category) => {
     const user = JSON.parse(localStorage.getItem("user"));
-    if (!user?._id) return; // user login nahi → fetch mat karo
+    if (!user?._id) return;
 
     setLoading(true);
     setQuizzes([]);
@@ -43,6 +45,12 @@ export default function Quiz() {
         { headers: { "X-Api-Key": API_KEY } }
       );
       const data = await res.json();
+      if (!Array.isArray(data)) {
+    toast.error("No quizzes found for this category");
+    setQuizzes([]);
+    setLoading(false);
+    return;   
+  }
       setQuizzes(data);
     } catch (err) {
       toast.error("Failed to load quizzes");
@@ -111,6 +119,14 @@ export default function Quiz() {
           total: quizzes.length,
         }),
       });
+
+      if (res.status === 401) {
+        toast.error("Session expired, please login again");
+        localStorage.removeItem("user");
+        navigate("/login", { replace: true });
+        return;
+      }
+
       if (!res.ok) throw new Error("Save failed");
       toast.success("✅ Score saved");
     } catch (err) {
@@ -129,7 +145,9 @@ export default function Quiz() {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-2 rounded ${selectedCategory === cat ? "bg-purple-700" : "bg-purple-900"} hover:bg-purple-600`}
+              className={`px-3 py-2 rounded ${
+                selectedCategory === cat ? "bg-purple-700" : "bg-purple-900"
+              } hover:bg-purple-600`}
             >
               {cat}
             </button>
@@ -142,24 +160,33 @@ export default function Quiz() {
           <div key={i} className="bg-gray-900/70 p-4 rounded-xl mb-4">
             <h2 className="font-semibold mb-2">{q.question}</h2>
             <ul className="space-y-2">
-              {Object.entries(q.answers || {}).filter(([k, v]) => v).map(([k, v]) => {
-                const isSelected = selectedAnswers[i] === k;
-                const isCorrect = q.correct_answers?.[`${k}_correct`] === "true";
+              {Object.entries(q.answers || {})
+                .filter(([k, v]) => v)
+                .map(([k, v]) => {
+                  const isSelected = selectedAnswers[i] === k;
+                  const isCorrect = q.correct_answers?.[`${k}_correct`] === "true";
 
-                let cls = "bg-purple-950/40 border border-purple-700";
-                if (showResults) cls = isSelected ? (isCorrect ? "bg-green-700 border-green-500" : "bg-red-700 border-red-500") : (isCorrect ? "bg-green-700 border-green-500" : cls);
-                else if (isSelected) cls = "bg-purple-700 border-purple-500";
+                  let cls = "bg-purple-950/40 border border-purple-700";
+                  if (showResults)
+                    cls = isSelected
+                      ? isCorrect
+                        ? "bg-green-700 border-green-500"
+                        : "bg-red-700 border-red-500"
+                      : isCorrect
+                      ? "bg-green-700 border-green-500"
+                      : cls;
+                  else if (isSelected) cls = "bg-purple-700 border-purple-500";
 
-                return (
-                  <li
-                    key={k}
-                    onClick={() => handleAnswerClick(i, k)}
-                    className={`${cls} py-2 px-3 rounded cursor-pointer`}
-                  >
-                    {v}
-                  </li>
-                );
-              })}
+                  return (
+                    <li
+                      key={k}
+                      onClick={() => handleAnswerClick(i, k)}
+                      className={`${cls} py-2 px-3 rounded cursor-pointer`}
+                    >
+                      {v}
+                    </li>
+                  );
+                })}
             </ul>
           </div>
         ))}
@@ -170,7 +197,11 @@ export default function Quiz() {
           </button>
         )}
 
-        {showResults && <p className="text-2xl font-bold mt-6">Score: {score} / {quizzes.length}</p>}
+        {showResults && (
+          <p className="text-2xl font-bold mt-6">
+            Score: {score} / {quizzes.length}
+          </p>
+        )}
       </div>
     </>
   );

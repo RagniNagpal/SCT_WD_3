@@ -15,7 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <Router>
-      {/* ✅ Toast Container (ONLY ONCE) */}
+      
       <ToastContainer
         position="top-right"
         autoClose={3000}
